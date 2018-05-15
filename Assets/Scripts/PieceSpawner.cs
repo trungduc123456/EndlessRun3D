@@ -35,7 +35,7 @@ public class PieceSpawner : MonoBehaviour {
                 }
         }
         // get Piece from Pool;
-        currentPiece = LevelManager.instance.GetPiece(type, Random.Range(0, amtObj - 1));
+        currentPiece = LevelManager.instance.GetPiece(type, Random.Range(0, amtObj));
         currentPiece.gameObject.SetActive(true);
         currentPiece.transform.SetParent(transform, false);
     }

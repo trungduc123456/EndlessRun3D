@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 3bdc3535df9e54046a8550d291dffdcd
+timeCreated: 1520961087
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: UTM Bebas
+  fontNames:
+  - UTM Bebas
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

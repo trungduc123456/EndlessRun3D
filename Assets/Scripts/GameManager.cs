@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
 
     public static GameManager instance;
     public bool IsDead { set; get; }
-    private const int COIN_SCORE_AMOUNT = 1;    
+    private const int COIN_SCORE_AMOUNT = 1;
     public bool isGameStarted;
     public Text scoreText;
     public Text coinText;
@@ -19,13 +20,16 @@ public class GameManager : MonoBehaviour {
     public float highScore;
     public PlayerController playerController;
     private int lastScore;
+    public GameObject panelScore;
+    public GameObject panelStart;
+
 
     // Death Menu
     public Animator deathMenuAnim;
     public Text deathTitleScoreText;
     public Text deathScoreText;
     public Text deathHighScoreText;
-     
+
     void Awake()
     {
         if (instance != null)
@@ -54,16 +58,12 @@ public class GameManager : MonoBehaviour {
     }
     void Update()
     {
-        if(Input.GetMouseButtonDown(0) && !isGameStarted)
+       
+        if (isGameStarted && !IsDead)
         {
-            isGameStarted = true;
-            playerController.StartRunning();
-        }
-        if(isGameStarted && !IsDead)
-        {
-            
+
             score += (Time.deltaTime * modifierScore);
-            if(lastScore != (int)score)
+            if (lastScore != (int)score)
             {
                 lastScore = (int)score;
                 scoreText.text = score.ToString("0");
@@ -72,12 +72,7 @@ public class GameManager : MonoBehaviour {
 
         }
     }
-    //void UpdateScores()
-    //{
-    //    scoreText.text = score.ToString();
-    //    coinText.text = coinScore.ToString();
-    //    modifierText.text = "x" + modifierScore.ToString("0.0");
-    //}
+  
     public void UpdateModifier(float modifierAmount)
     {
         modifierScore = 1.0f + modifierAmount;
@@ -89,7 +84,7 @@ public class GameManager : MonoBehaviour {
         coinText.text = coinScore.ToString();
         score += COIN_SCORE_AMOUNT;
         scoreText.text = ToPrettyString(int.Parse(score.ToString("0")));
-        
+
     }
     public void OnPlayButton()
     {
@@ -97,9 +92,12 @@ public class GameManager : MonoBehaviour {
     }
     public void OnDeath()
     {
-        //playerController.isRunning = false;
+        
+        panelScore.SetActive(false);
         IsDead = true;
-        if(score >= highScore)
+        FindObjectOfType<MountianSpawner>().IsScrolling = false;
+        FindObjectOfType<CameraController>().IsMoving = false;
+        if (score >= highScore)
         {
             PlayerPrefs.SetFloat("highScore", score);
             highScore = (int)score;
@@ -122,6 +120,16 @@ public class GameManager : MonoBehaviour {
             current = "0";
         }
         return current.Trim();
+
+    }
+    public void StartGame()
+    {
+        isGameStarted = true;
+        playerController.StartRunning();
+        FindObjectOfType<MountianSpawner>().IsScrolling = true;
+        FindObjectOfType<CameraController>().IsMoving = true;
+        panelStart.SetActive(false);
+        panelScore.SetActive(true);
 
     }
 
