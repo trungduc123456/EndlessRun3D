@@ -5,12 +5,13 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour {
 
     public static LevelManager instance;
+    public SegmentList lstSegmentList;
     public bool SHOW_COLLIDER;
     // Level Spawning
-    public const float DISTANCE_BEFORE_SPAWN = 100.0f;
-    private const int INITIAL_SEGMENTS = 10;
-    private const int INITIAL_TRANSITON_SEGMENTS = 2;
-    private const int MAX_SEGMENTS_ON_SCREEN = 15;
+    //public const float DISTANCE_BEFORE_SPAWN = 100.0f;
+    //private const int INITIAL_SEGMENTS = 10;
+    //private const int INITIAL_TRANSITON_SEGMENTS = 2;
+    //private const int MAX_SEGMENTS_ON_SCREEN = 15;
     private Transform cameraContainer;
     private int amountOfActiveSegments;
     private int continiousSegments;
@@ -27,8 +28,8 @@ public class LevelManager : MonoBehaviour {
     public List<Piece> slides = new List<Piece>();
 
     // List of Segment
-    public List<Segment> availableSegments = new List<Segment>();
-    public List<Segment> availableTransitions = new List<Segment>();
+   // public List<Segment> availableSegments = new List<Segment>();
+   // public List<Segment> availableTransitions = new List<Segment>();
     public List<Segment> segments = new List<Segment>();
 
     // 
@@ -43,13 +44,15 @@ public class LevelManager : MonoBehaviour {
         currentSpawnZ = 0;
         currentLevel = 0;
         SHOW_COLLIDER = false;
+        Debug.Log(lstSegmentList.availableSegments[0].name);
     }
     void Start()
     {
-        for (int i = 0; i < INITIAL_SEGMENTS; i++)
+        
+        for (int i = 0; i < GameSettings.INITIAL_SEGMENTS; i++)
         {
             // generate segments
-            if( i < INITIAL_TRANSITON_SEGMENTS)
+            if( i < GameSettings.INITIAL_TRANSITON_SEGMENTS)
             {
                 SpawnTransition();
             }
@@ -62,11 +65,11 @@ public class LevelManager : MonoBehaviour {
     }
     void Update()
     {
-        if (currentSpawnZ - cameraContainer.position.z < DISTANCE_BEFORE_SPAWN)
+        if (currentSpawnZ - cameraContainer.position.z < GameSettings.DISTANCE_BEFORE_SPAWN)
         {
             GenerateSegments();
         }
-        if (amountOfActiveSegments >= MAX_SEGMENTS_ON_SCREEN)
+        if (amountOfActiveSegments >= GameSettings.MAX_SEGMENTS_ON_SCREEN)
         {
             segments[amountOfActiveSegments - 1].DeSpawn();
             amountOfActiveSegments--;
@@ -89,7 +92,8 @@ public class LevelManager : MonoBehaviour {
     }
     public void SpawnTransition()
     {
-        List<Segment> possiableTransition = availableTransitions.FindAll(x => x.beginY1 == y1 || x.beginY2 == y2 || x.beginY3 == y3);
+        List<Segment> possiableTransition = lstSegmentList.availableTransitions.FindAll(x => x.beginY1 == y1 || x.beginY2 == y2 || x.beginY3 == y3);
+        //List<Segment> possiableTransition = availableTransitions.FindAll(x => x.beginY1 == y1 || x.beginY2 == y2 || x.beginY3 == y3);
         int id = Random.Range(0, possiableTransition.Count);
 
         Segment s = GetSegment(id, true);
@@ -105,7 +109,8 @@ public class LevelManager : MonoBehaviour {
     }
     public void SpawnSegment()
     {
-        List<Segment> possiableSeg = availableSegments.FindAll(x => x.beginY1 == y1 || x.beginY2 == y2 || x.beginY3 == y3);
+        List<Segment> possiableSeg = lstSegmentList.availableSegments.FindAll(x => x.beginY1 == y1 || x.beginY2 == y2 || x.beginY3 == y3);
+        //List<Segment> possiableSeg = availableSegments.FindAll(x => x.beginY1 == y1 || x.beginY2 == y2 || x.beginY3 == y3);
         int id = Random.Range(0, possiableSeg.Count);
 
         Segment s = GetSegment(id, false);
@@ -125,7 +130,7 @@ public class LevelManager : MonoBehaviour {
         r = segments.Find(x => x.SegId == id && x.transition == transition && !x.gameObject.activeSelf);
         if(r == null)
         {
-            GameObject go = Instantiate((transition) ? availableTransitions[id].gameObject : availableSegments[id].gameObject) as GameObject;
+            GameObject go = Instantiate((transition) ? lstSegmentList.availableTransitions[id].gameObject : lstSegmentList.availableSegments[id].gameObject) as GameObject;
             r = go.GetComponent<Segment>();
             r.SegId = id;
             r.transition = transition;
@@ -140,9 +145,11 @@ public class LevelManager : MonoBehaviour {
     }
     public Piece GetPiece(PieceTypes pt, int visualIndex)
     {
+        Debug.Log("nhay vao day");
         Piece p = pieces.Find(x => x.type == pt && x.visualIndex == visualIndex && !x.gameObject.activeSelf);
         if(p == null)
         {
+            Debug.Log("nhay vao day 2222");
             GameObject go = null;
             if(pt == PieceTypes.ramp)
             {

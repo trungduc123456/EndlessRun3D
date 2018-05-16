@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
     public Transform lookAt;
-    public Vector3 offSet = new Vector3(0f, 5f, -10f);
+    public Vector3 offSet = new Vector3(0f, 5.5f, -6f);
     private bool isMoving;
 
     public bool IsMoving
@@ -29,13 +29,21 @@ public class CameraController : MonoBehaviour {
 		
 	}
 	
-	// Update is called once per frame
-	void LateUpdate ()
+	
+    void LateUpdate ()
     {
         if (!IsMoving)
             return;
         Vector3 desiredPosition = lookAt.position + offSet;
+       
         desiredPosition.x = 0;
-        transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime);
-	}
+        //if (lookAt.GetComponent<PlayerController>().isFlying)
+        //{
+            
+        //    desiredPosition.y = Mathf.Lerp(desiredPosition.y, 4f, 7f * Time.deltaTime);
+        //}
+
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, 7f * Time.deltaTime);
+
+    }
 }

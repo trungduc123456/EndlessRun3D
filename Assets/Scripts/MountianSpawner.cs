@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MountianSpawner : MonoBehaviour
 {
-    private const float DISTANCE_TO_RESPAWN = 5f;
+    //private const float DISTANCE_TO_RESPAWN = 5f;
     public float scrollSpeed;
     public float totalLength;
     public bool IsScrolling { set; get; }
@@ -24,7 +24,7 @@ public class MountianSpawner : MonoBehaviour
         scrollLocation += scrollSpeed * Time.deltaTime;
         Vector3 newLocation = (playerTransfrom.transform.position.z + scrollLocation) * Vector3.forward;
         transform.position = newLocation;
-        if(transform.GetChild(0).position.z < playerTransfrom.transform.position.z - DISTANCE_TO_RESPAWN)
+        if(transform.GetChild(0).position.z < playerTransfrom.transform.position.z - GameSettings.DISTANCE_TO_RESPAWN)
         {
             transform.GetChild(0).localPosition += Vector3.forward * totalLength;
             transform.GetChild(0).SetSiblingIndex(transform.childCount);

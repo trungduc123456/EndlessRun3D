@@ -5,7 +5,7 @@ using UnityEngine;
 public class MobileInput : MonoBehaviour
 {
     public static MobileInput instance;
-    private const float DEAD_ZONE = 100.0f;
+    //private const float DEAD_ZONE = 100.0f;
     private bool tap;
     private bool swipeLeft;
     private bool swipeRight;
@@ -71,7 +71,7 @@ public class MobileInput : MonoBehaviour
             }
         }
 
-        if (swipeDelta.magnitude > DEAD_ZONE)
+        if (swipeDelta.magnitude > GameSettings.DEAD_ZONE)
         {
             float x = swipeDelta.x;
             float y = swipeDelta.y;
