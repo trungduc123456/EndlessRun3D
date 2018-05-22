@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class GameSettings
 {
+    public const string PlayerPrefsBaseKey = "leaderboard";
+    private const string HAT_SELECT = "hat_select";
+    private const string SOUND = "sound";
+    //private const string HAT_0 = "hat0";
+    //private const string HAT_1 = "hat1";
+    //private const string HAT_2 = "hat2";
     private const string HIGH_SCORE = "highScore";
     private const string COUNT_ITEM_FLY = "countItemFly";
     private const string COUNT_ITEM_MAGNET = "countItemMagnet";
@@ -55,12 +61,35 @@ public class GameSettings
     {
         get
         {
-            return PlayerPrefs.GetInt(COIN, 100);
+            return PlayerPrefs.GetInt(COIN, 1000);
         }
         set
         {
             PlayerPrefs.SetInt(COIN, value);
         }
     }
-	
+   
+    public static int Hat_Select
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(HAT_SELECT, 0);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(HAT_SELECT, value);
+        }
+    }
+    public static int Sound
+    {
+        get
+        {
+            return PlayerPrefs.GetInt(SOUND, 0);
+        }
+        set
+        {
+            PlayerPrefs.SetInt(SOUND, value);
+        }
+    }
+
 }

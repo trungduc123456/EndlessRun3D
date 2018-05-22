@@ -145,11 +145,11 @@ public class LevelManager : MonoBehaviour {
     }
     public Piece GetPiece(PieceTypes pt, int visualIndex)
     {
-        Debug.Log("nhay vao day");
+        //Debug.Log("nhay vao day");
         Piece p = pieces.Find(x => x.type == pt && x.visualIndex == visualIndex && !x.gameObject.activeSelf);
         if(p == null)
         {
-            Debug.Log("nhay vao day 2222");
+           // Debug.Log("nhay vao day 2222");
             GameObject go = null;
             if(pt == PieceTypes.ramp)
             {

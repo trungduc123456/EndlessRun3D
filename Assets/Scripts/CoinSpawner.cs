@@ -11,7 +11,8 @@ public class CoinSpawner : MonoBehaviour
 
     void Awake()
     {
-        forceSpawnAll = false;
+        
+        
         coins = new GameObject[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)
         {

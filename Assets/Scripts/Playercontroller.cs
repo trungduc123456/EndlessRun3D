@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     //private const float LANE_DISTANCE = 2.5f;
     private CharacterController controller;
+    public GameObject particleFlying;
     public bool isRunning;
     public bool isFlying;
     private Animator anim;
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private float speedIncreaseAmount = 0.1f;
     void Start()
     {
+       // particleFlying.SetActive(false);
         desiredLane = 0;
         speed = originalSpeed;
         controller = this.GetComponent<CharacterController>();
@@ -55,6 +57,7 @@ public class PlayerController : MonoBehaviour
         if(isFlying)
         {
             // flying
+            //particleFlying.SetActive(true);
             anim.SetTrigger("Idle");
             // verticalVelocity = Mathf.Lerp(verticalVelocity, jumpForce / 2, Time.deltaTime * speed);
             verticalVelocity = jumpForce / 2;
@@ -99,7 +102,32 @@ public class PlayerController : MonoBehaviour
             dir.y = 0f;
             transform.forward = Vector3.Lerp(transform.forward, dir, 0.05f);
         }
+        if(GameManager.instance.IsMagnet)
+        {
+            MagnetItems();
+        }
 
+
+    }
+    void FixedUpdate()
+    {
+        RaycastHit ray;
+        if (Physics.Raycast(transform.position, Vector3.right, out ray, 0.5F))
+        {
+            if (ray.collider.tag == "Col")
+            {
+                MoveLane(false);
+                //StartCoroutine("Left");
+            }
+        }
+
+        if (Physics.Raycast(transform.position, Vector3.left, out ray, 0.5F))
+        {
+            if (ray.collider.tag == "Col")
+            {
+                MoveLane(true);
+            }
+        }
 
     }
     void MoveLane(bool goingRight)
@@ -136,8 +164,9 @@ public class PlayerController : MonoBehaviour
     IEnumerator StopFlying(float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
+        //particleFlying.SetActive(false);
         isFlying = false;
-        verticalVelocity -= gravity * Time.deltaTime;
+        verticalVelocity -= gravity * Time.smoothDeltaTime;
     }
     void Crash()
     {
@@ -159,8 +188,7 @@ public class PlayerController : MonoBehaviour
             case Tag.COIN:
                 {
                     Debug.Log("coin");
-                    GameManager.instance.GetCoin();
-                    hit.transform.gameObject.SetActive(false);
+                   
                     break;
                 }
             case Tag.ITEM_FLY:
@@ -183,6 +211,22 @@ public class PlayerController : MonoBehaviour
                 {
                     break;
                 }
+        }
+    }
+    void MagnetItems()
+    {
+        Collider[] hit = Physics.OverlapSphere(transform.position, 10f);
+        if(hit.Length != 0)
+        {
+            for (int i = 0; i < hit.Length; i++)
+            {
+                if(hit[i].gameObject.tag == Tag.COIN)
+                {
+                    // make coin move to player
+
+                    hit[i].GetComponent<Coin>().MoveToPlayer(this.gameObject);
+                }
+            }
         }
     }
    

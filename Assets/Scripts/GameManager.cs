@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public GameObject panelStart;
     public GameObject panelShop;
     public GameObject panelItems;
+    public GameObject panelDead;
 
     // Death Menu
     public Animator deathMenuAnim;
@@ -44,6 +45,12 @@ public class GameManager : MonoBehaviour
 
     public int countItemFly;
     public int countItemMagnet;
+
+    public GameObject txtDiamondPrefabs;
+    public List<GameObject> lstTextDiamoundPrefabs;
+    public GameObject panelLeaderBoard;
+    public InputField newHighScore;
+    public GameObject btnSetNewHighSocre;
     void Awake()
     {
         if (instance != null)
@@ -61,17 +68,40 @@ public class GameManager : MonoBehaviour
         
         if(buttonFly != null)
         {
-            buttonFly.transform.GetChild(1).GetComponent<Text>().text = countItemFly.ToString();
+            buttonFly.transform.GetChild(0).GetComponent<Text>().text = countItemFly.ToString();
         }
         if(buttonMagnet != null)
         {
-            buttonMagnet.transform.GetChild(1).GetComponent<Text>().text = countItemMagnet.ToString();
+            buttonMagnet.transform.GetChild(0).GetComponent<Text>().text = countItemMagnet.ToString();
         }
         timeWaitFly = timeWaitMagnet = GameSettings.TIME_WAIT_SKILL;
         IsMagnet = false;
         highScore = GameSettings.HighScore;
         modifierScore = 1;
         playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+    }
+    void InitTextDiamoundPrefabs()
+    {
+        GameObject _txt = (GameObject)Instantiate(txtDiamondPrefabs);
+        _txt.transform.SetParent(GameObject.Find("Canvas").transform);
+        _txt.SetActive(false);
+        lstTextDiamoundPrefabs.Add(_txt);
+
+    }
+    public GameObject GetTextDimaoundFromPool()
+    {
+        //GameObject temp = null;
+        for (int i = 0; i < lstTextDiamoundPrefabs.Count; i++)
+        {
+            if (!lstTextDiamoundPrefabs[i].activeInHierarchy)
+            {
+                return lstTextDiamoundPrefabs[i];
+               
+            }
+                
+            
+        }
+        return null;
     }
     void Update()
     {
@@ -84,7 +114,7 @@ public class GameManager : MonoBehaviour
             {
                 lastScore = (int)score;
                 scoreText.text = score.ToString("0");
-                coinText.text = coinScore.ToString();
+                
             }
             
 
@@ -110,17 +140,25 @@ public class GameManager : MonoBehaviour
     public void GetCoin()
     {
         coinScore += 1;
+        allCoin += 1;
+        GameSettings.Coin = allCoin;
+       
+        coinText.text = coinScore.ToString();
         
-        //score += GameSettings.COIN_SCORE_AMOUNT;
+       
     }
-    public void OnPlayButton()
+    public void OnTryAgain()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
+    public void OnReturnHome()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
     public void OnDeath()
     {
-        allCoin += coinScore;
-        GameSettings.Coin = allCoin;
+        coinText.gameObject.SetActive(false);
+        panelDead.SetActive(true);
         panelItems.SetActive(false);
         panelScore.SetActive(false);
         IsDead = true;
@@ -135,9 +173,25 @@ public class GameManager : MonoBehaviour
         deathHighScoreText.text = ToPrettyString(Convert.ToInt32(highScore));
         deathTitleScoreText.text = "SCORE";
         deathScoreText.text = ToPrettyString(int.Parse(scoreText.text));
-        deathMenuAnim.SetTrigger("Dead");
+        //deathMenuAnim.SetTrigger("Dead");
+        if (LeaderBoard.instance.CheckScore((int)score))
+        {
+            newHighScore.gameObject.SetActive(true);
+            btnSetNewHighSocre.SetActive(true);
+            //SetNewHighScore();
+        }
     }
+    public void SetNewHighScore()
+    {
+        string name = newHighScore.text;
+       
+        LeaderBoard.instance.Record(name, (int)score);
+        
+        newHighScore.text = "";
+        newHighScore.gameObject.SetActive(false);
+        btnSetNewHighSocre.SetActive(false);
 
+    }
     public string ToPrettyString(int number)
     {
         string current = "";
@@ -255,11 +309,16 @@ public class GameManager : MonoBehaviour
     {
         if (buttonFly != null)
         {
-            buttonFly.transform.GetChild(1).GetComponent<Text>().text = GameSettings.CountItemFly.ToString();
+            buttonFly.transform.GetChild(0).GetComponent<Text>().text = GameSettings.CountItemFly.ToString();
         }
         if (buttonMagnet != null)
         {
-            buttonMagnet.transform.GetChild(1).GetComponent<Text>().text = GameSettings.CountItemMagnet.ToString();
+            buttonMagnet.transform.GetChild(0).GetComponent<Text>().text = GameSettings.CountItemMagnet.ToString();
         }
+    }
+    public void OpenLeaderBoard()
+    {
+        panelLeaderBoard.SetActive(true);
+        
     }
 }
